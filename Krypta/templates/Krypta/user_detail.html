@@ -1,0 +1,7 @@
+{% extends "Krypta/base.html" %}
+
+{%block content%}
+<h1>Zalogowano jako: {{ user.username }}</h1>
+<h1>Adres email: {{ user.email }}</h1>
+<h1>Imię i nazwisko: {{ user.get_full_name }}</h1>
+{% endblock %}

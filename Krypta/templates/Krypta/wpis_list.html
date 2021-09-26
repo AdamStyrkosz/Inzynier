@@ -1,0 +1,17 @@
+{% extends "Krypta/base.html" %}
+{%load static%}
+{%block content%}
+<div class="row">
+{%for item in object_list%}
+        <div class="text-center">
+            <a href="{%url 'wpis' pk=item.id%}">
+                <img src="{{ item.obraz.url }}" alt="BRAK OBRAZU" class="imgact">
+                <h2>{{item.tytul}}</h2>
+                <h5>{{item.data_utworzenia}}</h5>
+            </a>
+        </div>
+{%endfor%}
+</div>
+
+
+{%endblock%}

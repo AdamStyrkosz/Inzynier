@@ -1,0 +1,10 @@
+{% extends "Krypta/base.html" %}
+{%load static%}
+{%block content%}
+<div class="text-center">
+        <img src="{{object.obraz.url}}" alt="Obraz z wpisu" style="width: 50%; padding: 25px;">
+        <h1>{{object.tytul}}</h1>
+        <p style="color: gray;">Opublikowano: {{object.data_utworzenia}}</p>
+        <p class="zawartosc">{{object.zawartosc}}</p>
+</div>
+{%endblock%}

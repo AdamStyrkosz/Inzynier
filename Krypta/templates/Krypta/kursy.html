@@ -1,0 +1,25 @@
+{% extends 'Krypta/base.html' %}
+{% load humanize %}
+{% block content %}
+
+    <h2>Kursy kryptowalut:</h2>
+  <table class="table table-striped" id="tabela_krypto">
+  <tr>
+    <th>Nazwa</th>
+    <th>Cena</th>
+    <th>1d%</th>
+    <th>7d%</th>
+    <th>Obrót dzienny</th>
+  </tr>
+    {% for crypto in data %}
+  <tr>
+    <td><img src="{{ crypto.logo_url }}" style="width: 25px; height: 25px"> <span>{{crypto.name}} <span class="datawpisu">{{ crypto.id }}</span></span>
+    </td>
+    <td>${{crypto.price | floatformat:2 | intcomma }}</td>
+    <td>{{ crypto.1d.price_change_pct | floatformat:2 }}</td>
+    <td>{{ crypto.7d.price_change_pct | floatformat:2 }}</td>
+    <td>${{ crypto.1d.volume | floatformat:0 | intcomma }}</td>
+  </tr>
+  {%endfor%}
+  </table>
+{% endblock %}

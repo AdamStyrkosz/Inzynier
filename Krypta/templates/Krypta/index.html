@@ -1,0 +1,52 @@
+{% extends "Krypta/base.html" %}
+{% load humanize %}
+
+{%block content%}
+
+<div class="container d-flex"  style="margin-bottom:5%;">
+  <div class="row">
+  {% if user.is_authenticated %}
+  <h2>Witaj {{ request.user }}, sprawdź najnowsze aktualności</h2>
+  {% else %}
+  <h2>Ostatnie aktualności:</h2>
+  {% endif %}
+  {% for wpis in wpisy %}
+    <div class="col" style="text-align: center;">
+      <a href="{%url 'wpis' pk=wpis.id%}">
+      <img src="{{ wpis.obraz.url }}" alt="BRAK OBRAZU" class="imgact">
+      <h5>{{wpis.tytul}}</h5>
+      <p class="datawpisu">{{wpis.data_utworzenia}}</p>
+    </a>
+    </div>
+  
+  {% endfor %}  
+  </div>
+</div>
+
+<div class="container d-flex">
+  <div class="row" style="width: 100%">
+  <h2>Ceny najpopularniejszych kryptowalut</h2>
+  <table class="table table-striped" id="tabela_krypto">
+  <tr>
+    <th>Nazwa</th>
+    <th>Cena</th>
+    <th>1d%</th>
+    <th>7d%</th>
+    <th>Obrót dzienny</th>
+  </tr>
+{% for crypto in crypto_data %}
+  <tr>
+    <td><img src="{{ crypto.logo_url }}" style="width: 25px; height: 25px">
+          <span>{{crypto.name}} <span class="datawpisu">{{ crypto.id }}</span></span>
+    </td>
+    <td>${{crypto.price | floatformat:2 | intcomma }}</td>
+    <td>{{ crypto.1d.price_change_pct | floatformat:2 }}</td>
+    <td>{{ crypto.7d.price_change_pct | floatformat:2 }}</td>
+    <td>${{ crypto.1d.volume | floatformat:0 | intcomma }}</td>
+  </tr>
+  {%endfor%}
+  </table>
+  </div>
+</div>
+{%endblock%}
+
