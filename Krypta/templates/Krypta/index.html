@@ -18,21 +18,21 @@
       <p class="datawpisu">{{wpis.data_utworzenia}}</p>
     </a>
     </div>
-  
   {% endfor %}  
   </div>
 </div>
 
 <div class="container d-flex">
-  <div class="row" style="width: 100%">
+  <div class="row" style="width: 100%;">
+  <div class="col">
   <h2>Ceny najpopularniejszych kryptowalut</h2>
   <table class="table table-striped" id="tabela_krypto">
   <tr>
     <th>Nazwa</th>
     <th>Cena</th>
-    <th>1d%</th>
-    <th>7d%</th>
-    <th>Obrót dzienny</th>
+    <th>1d</th>
+    <th>7d</th>
+    <th>Obrót</th>
   </tr>
 {% for crypto in crypto_data %}
   <tr>
@@ -40,13 +40,14 @@
           <span>{{crypto.name}} <span class="datawpisu">{{ crypto.id }}</span></span>
     </td>
     <td>${{crypto.price | floatformat:2 | intcomma }}</td>
-    <td>{{ crypto.1d.price_change_pct | floatformat:2 }}</td>
-    <td>{{ crypto.7d.price_change_pct | floatformat:2 }}</td>
+    <td>{{ crypto.1d.price_change | floatformat:2 }}</td>
+    <td>{{ crypto.7d.price_change | floatformat:2 }}</td>
     <td>${{ crypto.1d.volume | floatformat:0 | intcomma }}</td>
   </tr>
   {%endfor%}
   </table>
   </div>
 </div>
+    </div>
 {%endblock%}
 

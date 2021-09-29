@@ -1,5 +1,6 @@
 body{
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Inter', sans-serif;
+  background-color: #fafcfe
 }
 
 .container {
@@ -7,9 +8,11 @@ body{
   }
  
   .site-header {
-    background-color: rgba(201, 201, 201, 0.85);
+    background-color: rgba(255, 255, 255, 0.85);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
     backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid;
+    border-bottom-color: #c4c4c4;
   }
   .site-header a {
     color: rgb(0, 0, 0);
@@ -58,6 +61,12 @@ body{
 
   .zawartosc{
     text-align: center;
+  }
+
+  .logo{
+    display: inline-block;
+    height: 50px;
+    border-radius: 15px;
   }
 
 

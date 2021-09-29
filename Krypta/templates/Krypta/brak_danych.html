@@ -1,0 +1,12 @@
+{% extends 'Krypta/base.html' %}
+
+{% block content %}
+    <script>
+    setTimeout(function(){
+    window.location.reload(1);
+}, 5000);
+    </script>
+    <h1> Nie udało się wczytać danych :(</h1>
+    <h2>Aplikacja korzysta z zewnętrznego API, które posiada ograniczenia dotyczące ilości zapytań. Proszę odczekać 5 sekund.</h2>
+
+{% endblock %}

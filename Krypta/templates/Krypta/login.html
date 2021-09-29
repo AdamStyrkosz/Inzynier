@@ -17,11 +17,10 @@
 
 <div class="container">
     <h1>Logowanie</h1>
-
-
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Zaloguj">
     </form>
+    <p>Nie masz konta? <a href="{% url 'register' %}">Zarejestruj się<a/></p>
  </div>

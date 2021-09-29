@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import View, FormView
+from django.views.generic import View, FormView, CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from nomics import Nomics
@@ -18,13 +18,16 @@ nomics = Nomics('7e9fbd09298ee1d741b02b628020b0bb7a6819e8')
 
 class Index(View):
     def get(self, request):
-        data = nomics.Currencies.get_currencies(ids="BTC,ETH,ADA,BNB,XRP,SOL,DOT,DOGE",interval="1d,7d")
-        wpisy = Wpis.objects.order_by('-data_utworzenia')[:3]
-        context = {
-            'wpisy': wpisy,
-            'crypto_data': data,
-        }
-        return render(request, 'Krypta/index.html',context)
+        data = nomics.Currencies.get_currencies(ids="BTC,ETH,ADA,BNB,XRP,SOL,DOT,LTC",interval="1d,7d")
+        if(data):
+            wpisy = Wpis.objects.order_by('-data_utworzenia')[:3]
+            context = {
+                'wpisy': wpisy,
+                'crypto_data': data,
+            }
+            return render(request, 'Krypta/index.html',context)
+        else:
+            return render(request,'Krypta/brak_danych.html')
 
 class CryptocurrencyList(View):
     def get(self,request):
@@ -70,6 +73,11 @@ class RegisterPage(FormView):
             return redirect('index')
         return super(RegisterPage,self).get(self,*args,**kwargs)
 
+class EdycjaWpisu(LoginRequiredMixin,UpdateView):
+    template_name = 'Krypta/edycja_wpisu.html'
+    model = Wpis
+    fields = '__all__'
+    success_url = reverse_lazy('aktualnosci')
 
 
 
