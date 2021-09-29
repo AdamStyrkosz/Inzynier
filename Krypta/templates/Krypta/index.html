@@ -8,7 +8,7 @@
   {% if user.is_authenticated %}
   <h2>Witaj {{ request.user }}, sprawdź najnowsze aktualności</h2>
   {% else %}
-  <h2>Ostatnie aktualności:</h2>
+  <h2>Ostatnie aktualności</h2>
   {% endif %}
   {% for wpis in wpisy %}
     <div class="col" style="text-align: center;">
@@ -30,9 +30,9 @@
   <tr>
     <th>Nazwa</th>
     <th>Cena</th>
-    <th>1d</th>
-    <th>7d</th>
-    <th>Obrót</th>
+    <th>1 dzień</th>
+    <th>7 dni</th>
+    <th>ATH</th>
   </tr>
 {% for crypto in crypto_data %}
   <tr>
@@ -42,7 +42,7 @@
     <td>${{crypto.price | floatformat:2 | intcomma }}</td>
     <td>{{ crypto.1d.price_change | floatformat:2 }}</td>
     <td>{{ crypto.7d.price_change | floatformat:2 }}</td>
-    <td>${{ crypto.1d.volume | floatformat:0 | intcomma }}</td>
+    <td>${{ crypto.high | floatformat:2 | intcomma }}</td>
   </tr>
   {%endfor%}
   </table>

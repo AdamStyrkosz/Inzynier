@@ -1,26 +1,16 @@
-
-<style>
-    body{
-        height: 100%;
-        font-family: 'Nunito', sans-serif;
-    }
-    .container{
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    }
-
-</style>
-
+{% extends 'Krypta/base.html' %}
+{% block content %}
 <div class="container">
-    <h1>Logowanie</h1>
-    <form method="post">
+
+    <form method="post" class="form-login">
+    <h1 style="margin-bottom: 1rem">Logowanie</h1>
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Zaloguj">
+        {% for field in form %}
+            <p>{{ field.label_tag }}</p>
+            <p>{{ field }}</p>
+        {% endfor %}
+        <button class="btn btn-outline-primary" type="submit">Zaloguj</button>
+        <p style="margin-top: 10px">Nie masz konta? <a href="{% url 'register' %}">Zarejestruj się</a></p>
     </form>
-    <p>Nie masz konta? <a href="{% url 'register' %}">Zarejestruj się<a/></p>
  </div>
+{% endblock %}

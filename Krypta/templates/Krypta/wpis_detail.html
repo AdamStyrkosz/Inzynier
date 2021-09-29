@@ -2,7 +2,9 @@
 {%load static%}
 {%block content%}
 <div class="text-center">
+        {% if request.user.is_authenticated %}
         <p><a href="{% url 'edycja_wpisu' pk=object.id %}">EDYTUJ</a></p>
+        {% endif %}
         <img src="{{object.obraz.url}}" alt="Obraz z wpisu" style="width: 50%; padding: 25px;">
         <h1>{{object.tytul}}</h1>
         <p style="color: gray;">Opublikowano: {{object.data_utworzenia}}</p>

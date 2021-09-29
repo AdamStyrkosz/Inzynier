@@ -68,5 +68,18 @@ body{
     height: 50px;
     border-radius: 15px;
   }
+  .form-login{
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+  }
+
+  @media (min-width: 768px) {
+    .wpis{
+      max-width: 70%;
+    }
+    }
+
 
 

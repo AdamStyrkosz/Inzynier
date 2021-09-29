@@ -7,18 +7,18 @@
   <tr>
     <th>Nazwa</th>
     <th>Cena</th>
-    <th>1d%</th>
-    <th>7d%</th>
-    <th>Obrót dzienny</th>
+    <th>1 dzień</th>
+    <th>7 dni</th>
+    <th>ATH</th>
   </tr>
     {% for crypto in data %}
   <tr>
     <td><img src="{{ crypto.logo_url }}" style="width: 25px; height: 25px"> <span>{{crypto.name}} <span class="datawpisu">{{ crypto.id }}</span></span>
     </td>
     <td>${{crypto.price | floatformat:2 | intcomma }}</td>
-    <td>{{ crypto.1d.price_change_pct | floatformat:2 }}</td>
-    <td>{{ crypto.7d.price_change_pct | floatformat:2 }}</td>
-    <td>${{ crypto.1d.volume | floatformat:0 | intcomma }}</td>
+    <td>{{ crypto.1d.price_change| floatformat:2 }}</td>
+    <td>{{ crypto.7d.price_change | floatformat:2 }}</td>
+    <td>${{ crypto.high | floatformat:2 | intcomma }}</td>
   </tr>
   {%endfor%}
   </table>
