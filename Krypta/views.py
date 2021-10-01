@@ -1,41 +1,54 @@
-import requests
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import View, FormView, CreateView, UpdateView
+from django.views.generic import View, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from nomics import Nomics
-from .models import Wpis
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
+from .models import Wpis
 
 # Create your views here.
 
 nomics = Nomics('7e9fbd09298ee1d741b02b628020b0bb7a6819e8')
 
-class Index(View):
+# API VIEWS
+class CryptocurrencyIndexAPI(APIView):
     def get(self, request):
         data = nomics.Currencies.get_currencies(ids="BTC,ETH,ADA,BNB,XRP,SOL,DOT,LTC",interval="1d,7d")
         if(data):
-            wpisy = Wpis.objects.order_by('-data_utworzenia')[:3]
-            context = {
-                'wpisy': wpisy,
-                'crypto_data': data,
-            }
-            return render(request, 'Krypta/index.html',context)
+            return Response(data)
         else:
-            return render(request,'Krypta/brak_danych.html')
+            return Response("Brak danych na serwerze")
+
+class CryptocurrencyAllAPI(APIView):
+    def get(self, request):
+        data = nomics.Currencies.get_currencies(ids="BTC,ETH,ADA,BNB,XRP,SOL,DOT,DOGE,UNI,AVAX,LUNA,LINK,ALGO,LTC,"
+                                                    "BCH,ATOM,MATIC",
+                                                interval="1d,7d")
+        if(data):
+            return Response(data)
+        else:
+            return Response("Brak danych na serwerze")
+
+# HTML VIEWS
+class Index(View):
+    def get(self, request):
+        wpisy = Wpis.objects.order_by('-data_utworzenia')[:3]
+        context = {
+            'wpisy': wpisy,
+        }
+        return render(request, 'Krypta/index.html', context)
+
 
 class CryptocurrencyList(View):
     def get(self,request):
-        data = nomics.Currencies.get_currencies(ids= "BTC,ETH,ADA,BNB,XRP,SOL,DOT,DOGE,UNI,AVAX,LUNA,LINK,ALGO,LTC,"
-                                                     "BCH,ATOM,MATIC",
-                                                interval="1d,7d")
-        context = {'data':data}
-        return render(request,'Krypta/kursy.html',context)
+        return render(request,'Krypta/kursy.html')
 
 
 class AktualnosciView(ListView):
@@ -78,6 +91,7 @@ class EdycjaWpisu(LoginRequiredMixin,UpdateView):
     model = Wpis
     fields = '__all__'
     success_url = reverse_lazy('aktualnosci')
+
 
 
 

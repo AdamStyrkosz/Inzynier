@@ -2,24 +2,13 @@
 {% load humanize %}
 {% block content %}
 
-    <h2>Kursy kryptowalut:</h2>
+  <div class="row" style="margin: 1em">
+          <div class="col-md-auto"><h2>Kursy kryptowalut</h2></div>
+          <div class="col" style="display: flex;align-items: center;justify-content: right;"><button class="btn btn-outline-secondary" onclick="renderTableFromAPI('{% url 'cryptoallapi' %}')">Odśwież</button></div>
+  </div>
   <table class="table table-striped" id="tabela_krypto">
-  <tr>
-    <th>Nazwa</th>
-    <th>Cena</th>
-    <th>1 dzień</th>
-    <th>7 dni</th>
-    <th>ATH</th>
-  </tr>
-    {% for crypto in data %}
-  <tr>
-    <td><img src="{{ crypto.logo_url }}" style="width: 25px; height: 25px"> <span>{{crypto.name}} <span class="datawpisu">{{ crypto.id }}</span></span>
-    </td>
-    <td>${{crypto.price | floatformat:2 | intcomma }}</td>
-    <td>{{ crypto.1d.price_change| floatformat:2 }}</td>
-    <td>{{ crypto.7d.price_change | floatformat:2 }}</td>
-    <td>${{ crypto.high | floatformat:2 | intcomma }}</td>
-  </tr>
-  {%endfor%}
+    <script>
+        renderTableFromAPI('{% url 'cryptoallapi' %}')
+    </script>
   </table>
 {% endblock %}
