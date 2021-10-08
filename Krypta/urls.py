@@ -13,6 +13,8 @@ urlpatterns = [
     path('rejestracja',views.RegisterPage.as_view(),name='register'),
     path('kursy',views.CryptocurrencyList.as_view(),name='kursy'),
     path('edycja_wpisu/<int:pk>',views.EdycjaWpisu.as_view(),name='edycja_wpisu'),
+    path('edycja_profilu/<int:pk>', views.EdycjaProfilu.as_view(), name='edycja_profilu'),
+    path('dashboard',views.Dashboard.as_view(),name='dashboard'),
 
     #API URL
     path('cryptocurrencyIndexAPI',views.CryptocurrencyIndexAPI.as_view(),name='cryptoindexapi'),

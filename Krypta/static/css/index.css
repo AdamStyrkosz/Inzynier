@@ -2,7 +2,15 @@ body{
   font-family: 'Inter', sans-serif;
   background-color: #fafcfe
 }
-
+table tbody {
+    display: table;
+    width: 100%;
+}
+table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
 .container {
     max-width: 1000px;
   }
@@ -59,10 +67,6 @@ body{
     text-decoration: none;
   }
 
-  .zawartosc{
-    text-align: center;
-  }
-
   .logo{
     display: inline-block;
     height: 50px;
@@ -80,6 +84,11 @@ body{
       max-width: 70%;
     }
     }
+
+  .rejestracja li, span{
+    font-size: 12px;
+    color: rgb(119, 119, 119);
+  }
 
 
 

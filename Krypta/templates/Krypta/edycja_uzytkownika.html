@@ -1,0 +1,10 @@
+{% extends 'Krypta/base.html' %}
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <table class="table">
+    {{ form.as_table }}
+        </table>
+    <input type="submit" class="btn btn-outline-primary" value="Zapisz zmiany">
+</form>
+{% endblock %}

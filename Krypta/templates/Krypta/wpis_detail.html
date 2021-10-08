@@ -2,12 +2,12 @@
 {%load static%}
 {%block content%}
 <div class="text-center">
-        {% if request.user.is_authenticated %}
-        <p><a href="{% url 'edycja_wpisu' pk=object.id %}">EDYTUJ</a></p>
+        {% if request.user.is_superuser %}
+        <p><a href="{% url 'edycja_wpisu' pk=object.id %}" class="btn btn-outline-secondary">EDYTUJ</a></p>
         {% endif %}
         <img src="{{object.obraz.url}}" alt="Obraz z wpisu" style="width: 50%; padding: 25px;">
         <h1>{{object.tytul}}</h1>
         <p style="color: gray;">Opublikowano: {{object.data_utworzenia}}</p>
-        <p class="zawartosc">{{object.zawartosc}}</p>
+        <div style="text-align: left">{{object.zawartosc|linebreaks}}</div>
 </div>
 {%endblock%}

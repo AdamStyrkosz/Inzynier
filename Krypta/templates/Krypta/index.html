@@ -23,19 +23,20 @@
 <div class="container d-flex">
   <div class="row" style="width: 100%;">
   <div class="col">
-      <div class="row" style="margin: 1em">
+      <div class="row" style="margin: 1em;">
           <div class="col-md-auto"><h2>Ceny najpopularniejszych kryptowalut</h2></div>
           <div class="col" style="display: flex;align-items: center;justify-content: right;"><button class="btn btn-outline-secondary" onclick="renderTableFromAPI('{% url 'cryptoindexapi' %}')">Odśwież</button></div>
       </div>
 
 
-  <table class="table table-striped" id="tabela_krypto">
-    <script>
-    renderTableFromAPI('{% url 'cryptoindexapi' %}')
-    </script>
+  <table class="table" id="tabela_krypto">
+
   </table>
   </div>
 </div>
     </div>
+    <script>
+    renderTableFromAPI('{% url 'cryptoindexapi' %}')
+    </script>
 {%endblock%}
 
