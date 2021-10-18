@@ -1,0 +1,198 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace MemoryFull
+{
+    public class Tile
+    {
+        private Rectangle _polozenie;
+        private Rectangle _wycinek;
+
+        public Rectangle Polozenie
+        {
+            get { return _polozenie; }
+            set { _polozenie = value; }
+        }
+
+        public Rectangle Wycinek
+        {
+            get { return _wycinek; }
+            set { _wycinek = value; }
+        }
+
+        public Tile(Rectangle p)
+        {
+            this._polozenie = p;
+        }
+    }
+    public class Game1 : Game
+    {
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+        private Texture2D background, spritesheet, pytajnik;
+
+        private List<Rectangle> spriteList = new List<Rectangle>();
+        private List<Rectangle> listaMiejsc = new List<Rectangle>();
+
+        private List<Tile> listaZakrytych = new List<Tile>();
+        private List<Tile> listaOdkrytych = new List<Tile>();
+        private List<Tile> listaWygranych = new List<Tile>();
+
+
+        private int wiersze, kolumny;
+        private int wysokosc, szerokosc;
+        private Random rand = new Random();
+
+        MouseState mstate = Mouse.GetState();
+        MouseState previousmstate;
+        private int timer = 0;
+        private int ruchy = 0;
+
+        public Game1()
+        {
+            _graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+            IsMouseVisible = true;
+        }
+
+        protected override void Initialize()
+        {
+            
+            wysokosc = 4;
+            szerokosc = 6;
+
+            _graphics.PreferredBackBufferWidth = szerokosc * 110 - 10;
+            _graphics.PreferredBackBufferHeight = wysokosc * 110 - 10;
+            _graphics.ApplyChanges();
+
+            for (int x = 0; x < szerokosc; x++)
+            {
+                for (int y = 0; y < wysokosc; y++)
+                {
+                    listaMiejsc.Add(new Rectangle(x*110, y*110,100,100));
+                }
+            }
+            
+            /*
+             Wycinanie pozycji spirtow do listy
+             */
+            wiersze = 3;
+            kolumny = 4;
+            for (int x = 0; x < kolumny; x++)
+            {
+                for (int y = 0; y < wiersze; y++)
+                {
+                    spriteList.Add(new Rectangle(x*100, y*100, 100, 100));
+                }
+            }
+
+            foreach (Rectangle p in listaMiejsc)
+            {
+                listaZakrytych.Add(new Tile(p));
+            }
+
+
+            spriteList = spriteList.OrderBy(a => rand.Next()).ToList();
+
+            for (int i = 0; i < spriteList.Count; i++)
+            {
+                listaZakrytych[i].Wycinek = spriteList[i];
+            }
+            spriteList = spriteList.OrderBy(a => rand.Next()).ToList();
+
+            for (int i = 12; i < listaZakrytych.Count; i++)
+            {
+                listaZakrytych[i].Wycinek = spriteList[i-12];
+            }
+
+            base.Initialize();
+        }
+
+        protected override void LoadContent()
+        {
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            background = Content.Load<Texture2D>("background");
+            pytajnik = Content.Load<Texture2D>("zakryty");
+            spritesheet = Content.Load<Texture2D>("spirtesheet");
+
+            // TODO: use this.Content to load your game content here
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            Window.Title = "Ruchy: " + ruchy.ToString();
+            previousmstate = mstate;
+            mstate = Mouse.GetState();
+            
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            if (listaOdkrytych.Count == 2)
+            {
+                timer += gameTime.ElapsedGameTime.Milliseconds;
+                if (listaOdkrytych[0].Wycinek == listaOdkrytych[1].Wycinek)
+                {
+                    listaWygranych.AddRange(listaOdkrytych);
+                    listaOdkrytych.Clear();
+                    timer = 0;
+                    ruchy++;
+                }
+                else if(listaOdkrytych[0].Wycinek != listaOdkrytych[1].Wycinek && timer >= 500)
+                {
+                    listaZakrytych.AddRange(listaOdkrytych);
+                    listaOdkrytych.Clear();
+                    timer = 0;
+                    ruchy++; 
+                }
+            }
+
+            if(mstate.LeftButton == ButtonState.Pressed && previousmstate.LeftButton == ButtonState.Released)
+            {
+                for (int i = 0; i < listaZakrytych.Count; i++)
+                {
+                    if (listaZakrytych[i].Polozenie.Contains(mstate.Position) && listaOdkrytych.Count < 2)
+                    {
+                        listaOdkrytych.Add(listaZakrytych[i]);
+                        listaZakrytych.RemoveAt(i);
+                    }
+                }
+            }
+
+            // TODO: Add your update logic here
+
+            base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(background, new Rectangle(0,0,_graphics.PreferredBackBufferWidth,_graphics.PreferredBackBufferHeight), Color.White);
+
+            foreach (var item in listaZakrytych)
+            {
+                _spriteBatch.Draw(pytajnik, item.Polozenie, Color.White);
+            }
+            foreach (var item in listaOdkrytych)
+            {
+                _spriteBatch.Draw(spritesheet, item.Polozenie, item.Wycinek, Color.White);
+            }
+            foreach (var item in listaWygranych)
+            {
+                _spriteBatch.Draw(spritesheet, item.Polozenie, item.Wycinek, Color.Green);
+            }
+
+            _spriteBatch.End();
+            // TODO: Add your drawing code here
+
+            base.Draw(gameTime);
+        }
+    }
+}
+
+
