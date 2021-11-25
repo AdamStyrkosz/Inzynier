@@ -1,0 +1,31 @@
+{% extends 'Krypta/base.html' %}
+{% load humanize %}
+{% block content %}
+
+    <h1 style="margin-top:20px"><img src="{{apidata.image}}" alt="coin" style="width: 64px; height: 64px"> {{ cryptocurrency.id }}</h1>
+    <h1>${{ apidata.price|floatformat:2|intcomma }}</h1>
+    <h3> ATH ${{ apidata.high|floatformat:2|intcomma }}</h3>
+    <h5>Do przebicia ATH pozostało ${{ apidata.delta|floatformat:2|intcomma }}</h5>
+    <span style="font-size:16px"> {{ cryptocurrency.description }}</span>
+    <div class="row" style="margin-top:10px">
+    <div class="col-2">
+         <a href="{{ cryptocurrency.website }}" class="btn btn-outline-secondary">Strona główna</a>
+    </div>
+
+    <div class="col-2">
+    <a href="{{ cryptocurrency.whitepaper }}" class="btn btn-outline-secondary">Whitepapers</a>
+    </div>
+    </div>
+<h2>Powiązane wpisy:</h2>
+<div class="row">
+{% for wpis in wpisy %}
+    <div class="col" style="text-align: center">
+      <a href="{%url 'wpis' pk=wpis.id%}">
+      <img src="{{ wpis.obraz.url }}" alt="BRAK OBRAZU" class="imgact">
+      <h5>{{wpis.tytul}}</h5>
+      <p class="datawpisu">{{wpis.data_utworzenia}}</p>
+    </a>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

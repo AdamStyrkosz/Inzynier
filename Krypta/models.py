@@ -22,3 +22,13 @@ class Wpis(models.Model):
 
     def __str__(self):
         return str(self.tytul)
+
+class Cryptocurrency(models.Model):
+    id = models.CharField(max_length=10,unique=True,primary_key=True)
+    description = models.TextField(max_length=2000)
+    website = models.URLField(null=True)
+    whitepaper = models.URLField(null=True)
+    connected_news = models.ManyToManyField(Wpis,related_name='wpis')
+
+    def __str__(self):
+        return self.id

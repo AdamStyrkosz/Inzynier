@@ -1,20 +1,19 @@
 from django.contrib.auth import login
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import View, FormView, UpdateView
+from django.views.generic import View, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from nomics import Nomics
-from rest_framework import permissions
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Wpis
 from .forms import UserRegistration
+from .models import Wpis, Cryptocurrency
+from .serializers import MessageSerializer
 
 # Create your views here.
 
@@ -22,8 +21,14 @@ nomics = Nomics('7e9fbd09298ee1d741b02b628020b0bb7a6819e8')
 
 
 # API VIEWS
-class CryptocurrencyIndexAPI(APIView):
+class CryptocurrencyDetailView(APIView):
+    def get(self, request, id):
+        queryset = Cryptocurrency.objects.get(id=id)
+        serializer = MessageSerializer(queryset)
+        return Response(serializer.data)
 
+
+class CryptocurrencyIndexAPI(APIView):
     def get(self, request):
         data = nomics.Currencies.get_currencies(ids="BTC,ETH,ADA,BNB,XRP,SOL,DOT,LTC", interval="1d,7d")
         if data:
@@ -58,9 +63,32 @@ class Index(View):
         }
         return render(request, 'Krypta/index.html', context)
 
-class Dashboard(LoginRequiredMixin,View):
+
+class CryptoDetail(View):
+    def get(self, request, id):
+        crypto = Cryptocurrency.objects.filter(id=id)
+        if crypto:
+            crypto = Cryptocurrency.objects.get(id=id)
+            wpisy = crypto.connected_news.all()
+            datafromapi = nomics.Currencies.get_currencies(ids=id, interval="1d")
+            apidata = {
+                'price': datafromapi[0]['price'],
+                'high': datafromapi[0]['high'],
+                'delta': str(float(datafromapi[0]['high']) - float(datafromapi[0]['price'])),
+                'image': datafromapi[0]['logo_url'],
+            }
+            context = {
+                'cryptocurrency': crypto,
+                'wpisy': wpisy,
+                'apidata': apidata
+            }
+            return render(request, 'Krypta/crypto_detail.html', context)
+        return render(request, 'Krypta/brak_danych.html')
+
+
+class Dashboard(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request,'Krypta/dashboard.html')
+        return render(request, 'Krypta/dashboard.html')
 
 
 class CryptocurrencyList(View):
@@ -91,36 +119,21 @@ class CustomLogin(LoginView):
         return reverse_lazy('index')
 
 
-"""class RegisterPage(FormView):
-    template_name = 'Krypta/register.html'
-    form_class = UserCreationForm
-    success_url = reverse_lazy('index')
-
-    def form_valid(self, form):
-        user = form.save()
-        if user is not None:
-            login(self.request, user)
-        return super(RegisterPage, self).form_valid(form)
-
-    def get(self, *args, **kwargs):
-        if self.request.user.is_authenticated:
-            return redirect('index')
-        return super(RegisterPage, self).get(self, *args, **kwargs)"""
-
 class RegisterPage(View):
-    def get(self,request):
+    def get(self, request):
         form = UserRegistration()
         context = {
-            'form' : form
+            'form': form
         }
-        return render(request,"Krypta/register.html",context)
-    def post(self,request):
+        return render(request, "Krypta/register.html", context)
+
+    def post(self, request):
         form = UserRegistration(request.POST)
         if form.is_valid():
             user = form.save(commit=True)
-            login(request,user)
+            login(request, user)
             return redirect('profil')
-        return render(request,'Krypta/register.html',{'form': form})
+        return render(request, 'Krypta/register.html', {'form': form})
 
 
 class EdycjaWpisu(UpdateView):
@@ -129,11 +142,12 @@ class EdycjaWpisu(UpdateView):
     fields = '__all__'
     success_url = reverse_lazy('aktualnosci')
 
-    def get(self,request,pk):
+    def get(self, request, pk):
         if request.user.is_superuser:
-            return super(EdycjaWpisu,self).get(self,request,pk)
+            return super(EdycjaWpisu, self).get(self, request, pk)
         else:
             return redirect('index')
+
 
 class EdycjaProfilu(UpdateView):
     template_name = 'Krypta/edycja_uzytkownika.html'
@@ -141,9 +155,7 @@ class EdycjaProfilu(UpdateView):
     fields = ('username', 'first_name', 'last_name')
     success_url = reverse_lazy('profil')
 
-    def get(self,request,pk):
+    def get(self, request, pk):
         if request.user.id == pk:
-            return super(EdycjaProfilu,self).get(self,request,pk)
+            return super(EdycjaProfilu, self).get(self, request, pk)
         return redirect('index')
-
-
