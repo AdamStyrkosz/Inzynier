@@ -1,0 +1,266 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+
+namespace Pong
+{
+    public class Ball
+    {
+        private Rectangle _hitbox;
+        private Point _speed;
+
+        public Point Speed
+        {
+            get { return _speed; }
+            set { _speed = value; }
+        }
+        public Rectangle Hitbox
+        {
+            get { return _hitbox; }
+        }
+
+        public Ball(Rectangle hitbox, Point speed)
+        {
+            _hitbox = hitbox;
+            _speed = speed;
+        }
+
+        public void updatePosition()
+        {
+            _hitbox.X = _hitbox.X + Speed.X;
+            _hitbox.Y = _hitbox.Y + Speed.Y;
+        }
+    }
+
+    public class Paleton
+    {
+        private Rectangle _hitbox;
+        public Rectangle Hitbox
+        {
+            get { return _hitbox; }
+            set { _hitbox = value; }
+        }
+
+        public Paleton(Rectangle hitbox)
+        {
+            Hitbox = hitbox;
+        }
+
+        public void moveUp()
+        {
+            _hitbox.Y = _hitbox.Y - 12;
+        }
+        public void moveDown()
+        {
+            _hitbox.Y = _hitbox.Y + 12;
+        }
+    }
+
+    public class ExploEvent
+    {
+        private int _frameCounter;
+        private int _maxFrame;
+        private Rectangle _hitbox;
+
+        public ExploEvent(Rectangle htbox)
+        {
+            MaxFrame = 25;
+            Hitbox = htbox;
+            _frameCounter = 0;
+        }
+
+        public Rectangle Hitbox
+        {
+            get { return _hitbox; }
+            set { _hitbox = value; }
+        }
+
+
+        public int MaxFrame
+        {
+            get { return _maxFrame; }
+            set { _maxFrame = value; }
+        }
+
+
+        public int FrameCounter
+        {
+            get { return _frameCounter; }
+            set { _frameCounter = value; }
+        }
+
+    }
+
+    public class Game1 : Game
+    {
+        private Texture2D ballSheet, exploSheet, background, paddle1, paddle2;
+        private SpriteFont font1;
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+
+        private Random rand = new Random();
+        private int[] possibleSpeed = new int[6] { -3, -2, -1, 1, 2, 3 };
+        private Ball ball;
+        private Paleton paddleA;
+        private Paleton paddleB;
+
+        private List<Rectangle> ballAnimCordList = new List<Rectangle>();
+        private List<Rectangle> exploAnimCordList = new List<Rectangle>();
+        private List<ExploEvent> exploEventList = new List<ExploEvent>();
+        private int ballListIterator = 0;
+
+
+        private int ballW = 64;
+        private int ballH = 64;
+
+        int wynik1 = 0;
+        int wynik2 = 0;
+
+
+        private MouseState mstate;
+
+        public Game1()
+        {
+            _graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+            IsMouseVisible = true;
+        }
+
+        protected override void Initialize()
+        {
+            //ladowanie pileczki waznej
+            for (int y = 0; y < 4*64; y+=64)
+            {
+                for (int x = 0; x < 16*64; x+=64)
+                {
+                    ballAnimCordList.Add(new Rectangle(x, y, 64, 64));
+                }
+            }
+            for (int i = 0; i < 7*64; i+=64)
+            {
+                ballAnimCordList.Add(new Rectangle(i, 4 * 64, 64, 64));
+            }
+
+            //ladowanie kuli mocy
+            for (int y = 0; y < 5*64; y+=64)
+            {
+                for (int x = 0; x < 5*64; x+=64)
+                {
+                    exploAnimCordList.Add(new Rectangle(x, y, 64, 64));
+                }
+            }
+
+
+            ball = new Ball(new Rectangle(_graphics.PreferredBackBufferWidth/2- ballW/2, _graphics.PreferredBackBufferHeight/2 - ballH/2, ballW, ballH), new Point(0, 0));
+            paddleA = new Paleton(new Rectangle(0, 200, 20, 150));
+            paddleB = new Paleton(new Rectangle(_graphics.PreferredBackBufferWidth-20, 200, 20, 150));
+
+            base.Initialize();
+        }
+
+        protected override void LoadContent()
+        {
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            ballSheet = Content.Load<Texture2D>("ball-anim");
+            exploSheet = Content.Load<Texture2D>("explosion64");
+            background = Content.Load<Texture2D>("pongBackground");
+            paddle1 = Content.Load<Texture2D>("paddle1a");
+            paddle2 = Content.Load<Texture2D>("paddle2a");
+            font1 = Content.Load<SpriteFont>("font1");
+
+            // TODO: use this.Content to load your game content here
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+            mstate = Mouse.GetState();
+            if(Keyboard.GetState().IsKeyDown(Keys.Space) && ball.Speed == new Point(0,0))
+                ball = new Ball(new Rectangle(_graphics.PreferredBackBufferWidth / 2 - ballW / 2, _graphics.PreferredBackBufferHeight / 2 - ballH / 2, ballW, ballH), new Point(possibleSpeed[rand.Next(6)], possibleSpeed[rand.Next(6)]));
+
+
+            if (ballListIterator < ballAnimCordList.Count-1)
+                ballListIterator++;
+            else
+                ballListIterator = 0;
+
+           
+
+            if (ball.Hitbox.Y >= _graphics.PreferredBackBufferHeight - ballH || ball.Hitbox.Y <= 0)
+                ball.Speed = new Point(ball.Speed.X,-ball.Speed.Y);
+
+            if (ball.Hitbox.X >= _graphics.PreferredBackBufferWidth - ballH)
+                wynik1++;
+            if (ball.Hitbox.X <= 0)
+                wynik2++;
+
+            if (ball.Hitbox.X >= _graphics.PreferredBackBufferWidth - ballH || ball.Hitbox.X <= 0)
+            {
+                exploEventList.Add(new ExploEvent(ball.Hitbox));
+                ball = new Ball(new Rectangle(_graphics.PreferredBackBufferWidth / 2 - ballW / 2, _graphics.PreferredBackBufferHeight / 2 - ballH / 2, ballW, ballH), new Point(0, 0));
+            }
+
+            for (int i = 0; i < exploEventList.Count; i++)
+            {
+                if (exploEventList[i].FrameCounter < exploEventList[i].MaxFrame-1)
+                {
+                    exploEventList[i].FrameCounter++;
+                }
+                else
+                    exploEventList.RemoveAt(i);
+            }
+
+
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && paddleA.Hitbox.Y > 0)
+                paddleA.moveUp();
+            else if (Keyboard.GetState().IsKeyDown(Keys.S) && paddleA.Hitbox.Y < _graphics.PreferredBackBufferHeight - 150)
+                paddleA.moveDown();
+
+            if (Keyboard.GetState().IsKeyDown(Keys.I) && paddleB.Hitbox.Y > 0)
+                paddleB.moveUp();
+            else if (Keyboard.GetState().IsKeyDown(Keys.K) && paddleB.Hitbox.Y < _graphics.PreferredBackBufferHeight - 150)
+                paddleB.moveDown();
+
+
+            if (paddleA.Hitbox.Intersects(ball.Hitbox) || paddleB.Hitbox.Intersects(ball.Hitbox))
+                if(ball.Speed.X > 0)
+                {
+                    ball.Speed = new Point(-ball.Speed.X - 1, ball.Speed.Y);
+                }
+                else
+                {
+                    ball.Speed = new Point(-ball.Speed.X + 1, ball.Speed.Y);
+                }
+
+
+            // TODO: Add your update logic here
+            ball.updatePosition();
+            base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            _spriteBatch.Begin();
+
+            _spriteBatch.Draw(background, new Rectangle(0,0,_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
+            _spriteBatch.Draw(ballSheet, ball.Hitbox, ballAnimCordList[ballListIterator], Color.White);
+            _spriteBatch.Draw(paddle2, paddleB.Hitbox, Color.White);
+            _spriteBatch.Draw(paddle1, paddleA.Hitbox, Color.White);
+            _spriteBatch.DrawString(font1, wynik1.ToString(), new Vector2(_graphics.PreferredBackBufferWidth/2-25,10), Color.White);
+            _spriteBatch.DrawString(font1, wynik2.ToString(), new Vector2(_graphics.PreferredBackBufferWidth / 2 + 15, 10), Color.White);
+            foreach (ExploEvent item in exploEventList)
+            {
+                _spriteBatch.Draw(exploSheet, item.Hitbox, exploAnimCordList[item.FrameCounter], Color.White);
+            }
+            _spriteBatch.End();
+
+            // TODO: Add your drawing code here
+
+            base.Draw(gameTime);
+        }
+    }
+}

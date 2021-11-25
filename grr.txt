@@ -1,0 +1,32 @@
+//ustawianie rozmiaru ekranu do rozmiaru planszy
+int wysokosc = 4;
+int szerokosc = 6;
+
+_graphics.PreferredBackBufferWidth = szerokosc * 110 - 10;
+_graphics.PreferredBackBufferHeight = wysokosc * 110 - 10;
+_graphics.ApplyChanges();
+
+
+//ustawianie napisu na belce okna
+Window.Title = ""
+
+
+//sprawdzanie stanu myszy i poprzedniego kliknięcie (przeciwdziałanie kilkukrotnemu kilknięciu)
+MouseState mState = Mouse.GetState();
+
+MouseState previousMState = mState;
+MouseState mState = Mouse.GetState();
+if(mState.LeftButton == ButtonState.Pressed && previousMState.LeftButton == ButtonState.Released)
+{
+    //...
+}
+
+//ustawianie timera
+timer += gameTime.ElapsedGameTime.Milliseconds;
+
+//konstrukcja Draw 
+_spriteBatch.Draw(tekstura, położenie, wycinek_sprite, color)
+
+//konstrukcja Rectangle
+new Rectangle(x, y, rozmiar tekstury, rozmiar tekstury)
+
