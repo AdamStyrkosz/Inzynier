@@ -1,63 +1,39 @@
-{% extends "Krypta/base.html" %}
-
-{%block content%}
+{% extends "Krypta/base.html" %} {%block content%}
 <div class="row">
-
-
-<table class="table">
-<tr>
-    <td>
-        Nazwa użytkownika
-    </td>
-    <td>
-        {{ user.username }}
-    </td>
-</tr>
-<tr>
-    <td>
-        Imię
-    </td>
-    <td>
-        {{ user.first_name }}
-    </td>
-</tr>
-<tr>
-    <td>
-        Nazwisko
-    </td>
-    <td>
-        {{ user.last_name }}
-    </td>
-</tr>
-<tr>
-    <td>
-        Adres email
-    </td>
-    <td>
-        {{ user.email }}
-    </td>
-</tr>
-<tr>
-    <td>
-        Data utworzenia konta
-    </td>
-    <td>
-        {{ user.date_joined }}
-    </td>
-</tr>
-<tr>
-    <td>
-        Ostatnie logowanie
-    </td>
-    <td>
-        {{ user.last_login }}
-    </td>
-</tr>
-</table>
+  <table class="table">
+    <tr>
+      <td>Nazwa użytkownika</td>
+      <td>{{ user.username }}</td>
+    </tr>
+    <tr>
+      <td>Imię</td>
+      <td>{{ user.first_name }}</td>
+    </tr>
+    <tr>
+      <td>Nazwisko</td>
+      <td>{{ user.last_name }}</td>
+    </tr>
+    <tr>
+      <td>Adres email</td>
+      <td>{{ user.email }}</td>
+    </tr>
+    <tr>
+      <td>Data utworzenia konta</td>
+      <td>{{ user.date_joined }}</td>
+    </tr>
+    <tr>
+      <td>Ostatnie logowanie</td>
+      <td>{{ user.last_login }}</td>
+    </tr>
+  </table>
 </div>
-    <div class="row">
-    <button class="btn btn-outline-secondary" onclick="location.href='{% url 'edycja_profilu' pk=user.id %}'" style="width: 15%;margin: 1rem">
+<div class="row">
+  <button
+    class="btn btn-outline-secondary"
+    onclick="location.href='{% url 'edycja_profilu' pk=user.id %}'"
+    style="width: 15%; margin: 1rem"
+  >
     Edytuj dane
-    </button>
-    </div>
+  </button>
+</div>
 {% endblock %}

@@ -1,16 +1,15 @@
-{% extends 'Krypta/base.html' %}
-{% block content %}
+{% extends 'Krypta/base.html' %} {% block content %}
 <div class="container">
-
-    <form method="post" class="form-login">
+  <form method="post" class="form-login">
     <h1 style="margin-bottom: 1rem">Logowanie</h1>
-        {% csrf_token %}
-        {% for field in form %}
-            <p>{{ field.label_tag }}</p>
-            <p>{{ field }}</p>
-        {% endfor %}
-        <button class="btn btn-outline-primary" type="submit">Zaloguj</button>
-        <p style="margin-top: 10px">Nie masz konta? <a href="{% url 'register' %}">Zarejestruj się</a></p>
-    </form>
- </div>
+    {% csrf_token %} {% for field in form %}
+    <p>{{ field.label_tag }}</p>
+    <p>{{ field }}</p>
+    {% endfor %}
+    <button class="btn btn-outline-primary" type="submit">Zaloguj</button>
+    <p style="margin-top: 10px">
+      Nie masz konta? <a href="{% url 'register' %}">Zarejestruj się</a>
+    </p>
+  </form>
+</div>
 {% endblock %}

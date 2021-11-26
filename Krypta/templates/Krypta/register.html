@@ -1,13 +1,10 @@
-{% extends "Krypta/base.html" %}
-
-{%block content%}
+{% extends "Krypta/base.html" %} {%block content%}
 <h1>Rejestracja</h1>
 <form method="post" class="rejestracja">
-    {% csrf_token %}
-    <table class="table">
+  {% csrf_token %}
+  <table class="table">
     {{ form.as_table }}
-    </table>
-    <input type="submit"  class="btn btn-outline-primary" value="Zarejestruj">
+  </table>
+  <input type="submit" class="btn btn-outline-primary" value="Zarejestruj" />
 </form>
 {% endblock %}
-

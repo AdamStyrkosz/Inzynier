@@ -1,13 +1,21 @@
-{% extends 'Krypta/base.html' %}
-{% load humanize %}
-{% block content %}
+{% extends 'Krypta/base.html' %} {% load humanize %} {% block content %}
 
-  <div class="row" style="margin: 1em">
-          <div class="col-md-auto"><h2>Kursy kryptowalut</h2></div>
-          <div class="col" style="display: flex;align-items: center;justify-content: right;"><button class="btn btn-outline-secondary" onclick="renderTableFromAPI('{% url 'cryptoallapi' %}')">Odśwież</button></div>
+<div class="row" style="margin: 1em">
+  <div class="col-md-auto"><h2>Kursy kryptowalut</h2></div>
+  <div
+    class="col"
+    style="display: flex; align-items: center; justify-content: right"
+  >
+    <button
+      class="btn btn-outline-secondary"
+      onclick="renderTableFromAPI('{% url 'cryptoallapi' %}')"
+    >
+      Odśwież
+    </button>
   </div>
-  <table class="table table-striped" id="tabela_krypto"></table>
-    <script>
-        renderTableFromAPI('{% url 'cryptoallapi' %}')
-    </script>
+</div>
+<table class="table table-striped" id="tabela_krypto"></table>
+<script>
+  renderTableFromAPI('{% url 'cryptoallapi' %}')
+</script>
 {% endblock %}

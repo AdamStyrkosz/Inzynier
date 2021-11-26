@@ -1,42 +1,47 @@
-{% extends "Krypta/base.html" %}
-
-{%block content%}
-<div class="container d-flex"  style="margin-bottom:5%;">
+{% extends "Krypta/base.html" %} {%block content%}
+<div class="container d-flex" style="margin-bottom: 5%">
   <div class="row" style="margin: 1em">
-  {% if user.is_authenticated %}
-  <h2>Witaj {{ request.user }}, sprawdź najnowsze aktualności</h2>
-  {% else %}
-  <h2>Ostatnie aktualności</h2>
-  {% endif %}
-  {% for wpis in wpisy %}
-    <div class="col" style="text-align: center;">
+    {% if user.is_authenticated %}
+    <h2>Witaj {{ request.user }}, sprawdź najnowsze aktualności</h2>
+    {% else %}
+    <h2>Ostatnie aktualności</h2>
+    {% endif %} {% for wpis in wpisy %}
+    <div class="col" style="text-align: center">
       <a href="{%url 'wpis' pk=wpis.id%}">
-      <img src="{{ wpis.obraz.url }}" alt="BRAK OBRAZU" class="imgact">
-      <h5>{{wpis.tytul}}</h5>
-      <p class="datawpisu">{{wpis.data_utworzenia}}</p>
-    </a>
+        <img src="{{ wpis.obraz.url }}" alt="BRAK OBRAZU" class="imgact" />
+        <h5>{{wpis.tytul}}</h5>
+        <p class="datawpisu">{{wpis.data_utworzenia}}</p>
+      </a>
     </div>
-  {% endfor %}  
+    {% endfor %}
   </div>
 </div>
 
 <div class="container d-flex">
-  <div class="row" style="width: 100%;">
-  <div class="col">
-      <div class="row" style="margin: 1em;">
-          <div class="col-md-auto"><h2>Ceny najpopularniejszych kryptowalut</h2></div>
-          <div class="col" style="display: flex;align-items: center;justify-content: right;"><button class="btn btn-outline-secondary" onclick="renderTableFromAPI('{% url 'cryptoindexapi' %}')">Odśwież</button></div>
+  <div class="row" style="width: 100%">
+    <div class="col">
+      <div class="row" style="margin: 1em">
+        <div class="col-md-auto">
+          <h2>Ceny najpopularniejszych kryptowalut</h2>
+        </div>
+        <div
+          class="col"
+          style="display: flex; align-items: center; justify-content: right"
+        >
+          <button
+            class="btn btn-outline-secondary"
+            onclick="renderTableFromAPI('{% url 'cryptoindexapi' %}')"
+          >
+            Odśwież
+          </button>
+        </div>
       </div>
 
-
-  <table class="table" id="tabela_krypto">
-
-  </table>
+      <table class="table" id="tabela_krypto"></table>
+    </div>
   </div>
 </div>
-    </div>
-    <script>
-    renderTableFromAPI('{% url 'cryptoindexapi' %}')
-    </script>
+<script>
+  renderTableFromAPI('{% url 'cryptoindexapi' %}')
+</script>
 {%endblock%}
-
