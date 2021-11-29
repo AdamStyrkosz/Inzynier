@@ -191,7 +191,7 @@
           <th>Ilość</th>
           <th>Cena zakupu</th>
           <th>Aktualna cena</th>
-          <th>Zysk / Strata</th>
+          <th>Zysk / Strata ($)</th>
         </tr>
         {%for crypto in cryptocurrencies%}
         <tr>
@@ -200,7 +200,15 @@
           <td>{{crypto.count|floatformat:3|intcomma }}</td>
           <td>${{crypto.price|floatformat:2|intcomma }}</td>
           <td>${{crypto.actual_price|floatformat:2|intcomma }}</td>
-          <td>${{crypto.price_diff|floatformat:2|intcomma }}</td>
+          {%if crypto.price_diff > 0%}
+          <td style="color: green">
+            {{crypto.price_diff|floatformat:2|intcomma }}
+          </td>
+          {%else%}
+          <td style="color: red">
+            {{crypto.price_diff|floatformat:2|intcomma }}
+          </td>
+          {%endif%}
         </tr>
         {%endfor%}
       </table>

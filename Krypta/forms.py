@@ -22,4 +22,8 @@ class ExchangeForm(forms.ModelForm):
     class Meta:
         model = CryptocurrencyExchangeModel
         fields = ("cryptocurrency","count","price")
-        exclude = ('user',)
+        labels = {
+            "cryptocurrency" : "Kryptowaluta",
+            "count" : "Ilość",
+            "price": "Cena"
+        }
