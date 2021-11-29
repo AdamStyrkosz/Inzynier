@@ -2,18 +2,21 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
+from django.db.models.query import QuerySet
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import View, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from nomics import Nomics
+from requests.api import request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .forms import UserRegistration
 from .models import CryptocurrencyExchangeModel, Wpis, Cryptocurrency
-from .serializers import MessageSerializer
+from .serializers import CryptoDetailSerializer, ExchangeSerializer
+from rest_framework import viewsets
 
 # Create your views here.
 
@@ -21,10 +24,18 @@ nomics = Nomics("7e9fbd09298ee1d741b02b628020b0bb7a6819e8")
 
 
 # API VIEWS
+
+class ExchangeViewSet(LoginRequiredMixin,viewsets.ModelViewSet):
+    queryset = CryptocurrencyExchangeModel.objects.all()
+    serializer_class = ExchangeSerializer
+    
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
 class CryptocurrencyDetailView(APIView):
     def get(self, request, id):
         queryset = Cryptocurrency.objects.get(id=id)
-        serializer = MessageSerializer(queryset)
+        serializer = CryptoDetailSerializer(queryset)
         return Response(serializer.data)
 
 
