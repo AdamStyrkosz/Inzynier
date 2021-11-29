@@ -42,16 +42,18 @@
             <circle cx="12" cy="12" r="10"></circle>
           </svg>
         </a>
-        <a class="py-2 d-none d-md-inline-block" href="{% url 'index' %}"
-          >Strona główna</a
-        >
+
         <a class="py-2 d-none d-md-inline-block" href="{% url 'aktualnosci' %}"
           >Aktualności</a
         >
         <a class="py-2 d-none d-md-inline-block" href="{% url 'kursy' %}"
           >Kursy kryptowalut</a
         >
+
         {% if user.is_authenticated %}
+        <a class="py-2 d-none d-md-inline-block" href="{% url 'dashboard' %}"
+          >Dashboard</a
+        >
         <a
           class="py-2 d-none d-md-inline-block"
           style="font-weight: bold"

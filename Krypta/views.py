@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .forms import UserRegistration
-from .models import Wpis, Cryptocurrency
+from .models import CryptocurrencyExchangeModel, Wpis, Cryptocurrency
 from .serializers import MessageSerializer
 
 # Create your views here.
@@ -98,7 +98,35 @@ class CryptoDetail(View):
 
 class Dashboard(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, "Krypta/dashboard.html")
+        balance = 0
+        value_diff = 0
+        symbols = ""
+
+        cryptocurencies = CryptocurrencyExchangeModel.objects.filter(user=request.user).values()
+               
+        for item in cryptocurencies:
+            symbols += f"{str(item['cryptocurrency_id'])},"
+            
+        datafromapi = nomics.Currencies.get_currencies(ids=symbols, interval="1d")
+        crypto_to_price_mapping = {}
+        for crypto in datafromapi:
+            crypto_to_price_mapping[crypto['currency']] = crypto['price']
+
+
+        for crypto in cryptocurencies:
+            crypto['actual_price'] = float(crypto_to_price_mapping[crypto['cryptocurrency_id']])
+            crypto['price_diff'] = (float(crypto['actual_price'])) * float(crypto['count']) - (float(crypto['price']) * float(crypto['count']))
+            balance += crypto['actual_price'] * crypto['count']
+            value_diff += crypto['price_diff']
+
+           
+        context = {
+            "user": request.user,
+            "cryptocurrencies": cryptocurencies,
+            "balance" : balance,
+            "value_diff" : value_diff
+            } 
+        return render(request, "Krypta/dashboard.html",context)
 
 
 class CryptocurrencyList(View):

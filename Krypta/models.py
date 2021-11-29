@@ -1,6 +1,6 @@
 import datetime
 import os
-
+from django.conf import settings
 from django.db import models
 
 
@@ -35,3 +35,14 @@ class Cryptocurrency(models.Model):
 
     def __str__(self):
         return self.id
+
+class CryptocurrencyExchangeModel(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    count = models.FloatField()
+    cryptocurrency = models.ForeignKey(Cryptocurrency,on_delete=models.CASCADE)
+    price = models.IntegerField()
+    date_of_transaction = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"User: {self.user} | Price: {self.price}"
+
