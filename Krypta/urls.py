@@ -4,10 +4,10 @@ from rest_framework import routers
 from rest_framework.routers import SimpleRouter
 
 from . import views
-from .views import CryptocurrencyDetailView
+from .views import CryptocurrencyDetailView, ExchangeViewSet
 
 router = SimpleRouter()
-# router.register('cryptocurrency',CryptocurrencyViewSet,'cryptocurrency')
+router.register('cryptocurrencyExchange',ExchangeViewSet,'cryptocurrencyExchange')
 
 
 urlpatterns = [
@@ -41,6 +41,7 @@ urlpatterns = [
         views.CryptocurrencyDetailView.as_view(),
         name="cryptocurrencydetail",
     ),
+    
 ]
 
-# urlpatterns+= router.urls
+urlpatterns+= router.urls

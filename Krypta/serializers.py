@@ -1,11 +1,11 @@
 from nomics import Nomics
 from rest_framework import serializers
-from .models import Wpis, Cryptocurrency
+from .models import CryptocurrencyExchangeModel, Wpis, Cryptocurrency
 
 nomics = Nomics("7e9fbd09298ee1d741b02b628020b0bb7a6819e8")
 
 
-class MessageSerializer(serializers.ModelSerializer):
+class CryptoDetailSerializer(serializers.ModelSerializer):
     stock_data = serializers.SerializerMethodField()
 
     class Meta:
@@ -20,3 +20,9 @@ class MessageSerializer(serializers.ModelSerializer):
 
     def get_stock_data(self, obj):
         return nomics.Currencies.get_currencies(ids=obj.id)
+
+class ExchangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CryptocurrencyExchangeModel
+        fields = "__all__"
+
