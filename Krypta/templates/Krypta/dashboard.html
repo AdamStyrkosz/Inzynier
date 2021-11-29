@@ -173,23 +173,32 @@
       </div>
     </div>
     <div class="container" style="margin-left: 20%">
+      <div style="width: 50%; margin: 20px">
+        <form method="POST">
+          {%csrf_token%}
+          <table class="table">
+            {{form.as_table}}
+          </table>
+          <button type="submit" class="btn btn-outline-primary">ZAPISZ</button>
+        </form>
+      </div>
       <h1>Stan konta: {{balance|floatformat:2|intcomma}}$</h1>
       <h2>Całkowity zysk/strata: {{value_diff|floatformat:2|intcomma}}$</h2>
       <table class="table">
         <tr>
           <th>Waluta</th>
+          <th>Data transakcji</th>
           <th>Ilość</th>
           <th>Cena zakupu</th>
-          <th>Data zakupu</th>
           <th>Aktualna cena</th>
           <th>Zysk / Strata</th>
         </tr>
         {%for crypto in cryptocurrencies%}
         <tr>
           <td>{{crypto.cryptocurrency_id}}</td>
-          <td>{{crypto.count|floatformat:5|intcomma }}</td>
-          <td>${{crypto.price|floatformat:2|intcomma }}</td>
           <td>{{crypto.date_of_transaction}}</td>
+          <td>{{crypto.count|floatformat:3|intcomma }}</td>
+          <td>${{crypto.price|floatformat:2|intcomma }}</td>
           <td>${{crypto.actual_price|floatformat:2|intcomma }}</td>
           <td>${{crypto.price_diff|floatformat:2|intcomma }}</td>
         </tr>

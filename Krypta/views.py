@@ -13,7 +13,7 @@ from requests.api import request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .forms import UserRegistration
+from .forms import ExchangeForm, UserRegistration
 from .models import CryptocurrencyExchangeModel, Wpis, Cryptocurrency
 from .serializers import CryptoDetailSerializer, ExchangeSerializer
 from rest_framework import viewsets
@@ -113,10 +113,12 @@ class Dashboard(LoginRequiredMixin, View):
         value_diff = 0
         symbols = ""
 
-        cryptocurencies = CryptocurrencyExchangeModel.objects.filter(user=request.user).values()
+        form = ExchangeForm()
+        cryptocurencies = CryptocurrencyExchangeModel.objects.filter(user=request.user).order_by('-date_of_transaction').values()
                
         for item in cryptocurencies:
-            symbols += f"{str(item['cryptocurrency_id'])},"
+            if str(item['cryptocurrency_id']) not in symbols:
+                symbols += f"{str(item['cryptocurrency_id'])},"
             
         datafromapi = nomics.Currencies.get_currencies(ids=symbols, interval="1d")
         crypto_to_price_mapping = {}
@@ -135,9 +137,19 @@ class Dashboard(LoginRequiredMixin, View):
             "user": request.user,
             "cryptocurrencies": cryptocurencies,
             "balance" : balance,
-            "value_diff" : value_diff
+            "value_diff" : value_diff,
+            "form": form
             } 
         return render(request, "Krypta/dashboard.html",context)
+
+    def post(self, request):
+        form = ExchangeForm(request.POST)      
+        if form.is_valid():                  
+            new_user = form.save(commit=False)
+            new_user.user = request.user
+            new_user.save()
+            return redirect("dashboard")
+        return render(request, "Krypta/dashboard.html", {"form": form})
 
 
 class CryptocurrencyList(View):
