@@ -41,7 +41,7 @@ class CryptocurrencyExchangeModel(models.Model):
     count = models.FloatField()
     cryptocurrency = models.ForeignKey(Cryptocurrency,on_delete=models.CASCADE)
     price = models.IntegerField()
-    date_of_transaction = models.DateTimeField(auto_now=True)
+    date_of_transaction = models.DateField()
 
     def __str__(self):
         return f"User: {self.user} | Price: {self.price}"
