@@ -231,6 +231,12 @@ class CryptocurrencyExchangeUpdateView(UpdateView):
         "price",
         "date_of_transaction",
     ]
+    labels = {
+        "cryptocurrency": "Kryptowaluta",
+        "count": "Ilość",
+        "price": "Cena",
+        "date_of_transaction": "Data transakcji"
+    }
     success_url = reverse_lazy("dashboard")
 
     def get(self, request, pk):
