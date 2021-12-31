@@ -1,14 +1,12 @@
 from django.contrib.auth.views import LogoutView
-from django.urls import path, include
-from rest_framework import routers
+from django.urls import path
 from rest_framework.routers import SimpleRouter
 
 from . import views
-from .views import CryptocurrencyDetailView, ExchangeViewSet
+from .views import ExchangeViewSet
 
 router = SimpleRouter()
-router.register('cryptocurrencyExchange',ExchangeViewSet,'cryptocurrencyExchange')
-
+router.register('cryptocurrencyExchange', ExchangeViewSet, 'cryptocurrencyExchange')
 
 urlpatterns = [
     path("", views.Index.as_view(), name="index"),
@@ -42,7 +40,7 @@ urlpatterns = [
         views.CryptocurrencyDetailView.as_view(),
         name="cryptocurrencydetail",
     ),
-    
+
 ]
 
-urlpatterns+= router.urls
+urlpatterns += router.urls

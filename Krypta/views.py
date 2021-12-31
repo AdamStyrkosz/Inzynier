@@ -2,7 +2,6 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
-from django.db.models.query import QuerySet
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -10,14 +9,13 @@ from django.views.generic import View, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from nomics import Nomics
-from requests.api import request
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .forms import ExchangeForm, UserRegistration
 from .models import CryptocurrencyExchangeModel, Wpis, Cryptocurrency
 from .serializers import CryptoDetailSerializer, ExchangeSerializer
-from rest_framework import viewsets
 
 # Create your views here.
 
@@ -129,13 +127,12 @@ class Dashboard(LoginRequiredMixin, View):
             crypto_to_price_mapping[crypto['currency']] = crypto['price']
 
         for crypto in cryptocurencies:
-                crypto['actual_price'] = float(crypto_to_price_mapping[crypto['cryptocurrency_id']])
-                crypto['price_diff'] = (float(crypto['actual_price'])) * float(crypto['count']) - (
-                            float(crypto['price']) * float(crypto['count']))
-                value_diff += crypto['price_diff']
-                if crypto['transaction_type'] == CryptocurrencyExchangeModel.BUY:
-                    balance += crypto['actual_price'] * crypto['count']
-
+            crypto['actual_price'] = float(crypto_to_price_mapping[crypto['cryptocurrency_id']])
+            crypto['price_diff'] = (float(crypto['actual_price'])) * float(crypto['count']) - (
+                    float(crypto['price']) * float(crypto['count']))
+            value_diff += crypto['price_diff']
+            if crypto['transaction_type'] == CryptocurrencyExchangeModel.BUY:
+                balance += crypto['actual_price'] * crypto['count']
 
         context = {
             "user": request.user,
@@ -202,7 +199,11 @@ class RegisterPage(View):
 class EdycjaWpisu(UpdateView):
     template_name = "Krypta/edycja_wpisu.html"
     model = Wpis
-    fields = "__all__"
+    fields = (
+        'tytul',
+        'zawartosc',
+        'opis'
+    )
     success_url = reverse_lazy("aktualnosci")
 
     def get(self, request, pk):

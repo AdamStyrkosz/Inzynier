@@ -17,16 +17,15 @@ class UserRegistration(UserCreationForm):
             "password2",
         )
 
-class ExchangeForm(forms.ModelForm):
 
+class ExchangeForm(forms.ModelForm):
     class Meta:
         model = CryptocurrencyExchangeModel
-        fields = ("cryptocurrency","count","price","date_of_transaction",'transaction_type')
+        fields = ("cryptocurrency", "count", "price", "date_of_transaction", 'transaction_type')
         labels = {
-            "cryptocurrency" : "Kryptowaluta",
-            "count" : "Ilość",
+            "cryptocurrency": "Kryptowaluta",
+            "count": "Ilość",
             "price": "Cena",
             "date_of_transaction": "Data transakcji",
-            'transaction_type':"Typ transakcji",
-
+            'transaction_type': "Typ transakcji",
         }

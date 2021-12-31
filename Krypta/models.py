@@ -1,5 +1,6 @@
 import datetime
 import os
+
 from django.conf import settings
 from django.db import models
 
@@ -25,32 +26,45 @@ class Wpis(models.Model):
     def __str__(self):
         return str(self.tytul)
 
+    class Meta:
+        verbose_name = "Wpis"
+        verbose_name_plural = "Wpisy"
+
 
 class Cryptocurrency(models.Model):
     id = models.CharField(max_length=10, unique=True, primary_key=True)
+    name = models.CharField(max_length=32)
     description = models.TextField(max_length=2000)
     website = models.URLField(null=True)
     whitepaper = models.URLField(null=True)
-    connected_news = models.ManyToManyField(Wpis, related_name="wpis")
+    connected_news = models.ManyToManyField(Wpis, related_name="wpis", blank=True)
 
     def __str__(self):
         return self.id
+
+    class Meta:
+        verbose_name = "Kryptowaluta"
+        verbose_name_plural = "Kryptowaluty"
+
 
 class CryptocurrencyExchangeModel(models.Model):
     BUY = "BUY"
     SELL = "SELL"
     TRANSACTION_TYPES = (
-        (BUY,"Kupno"),
-        (SELL,"Sprzedaż")
+        (BUY, "Kupno"),
+        (SELL, "Sprzedaż")
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     count = models.FloatField()
-    cryptocurrency = models.ForeignKey(Cryptocurrency,on_delete=models.CASCADE)
+    cryptocurrency = models.ForeignKey(Cryptocurrency, on_delete=models.CASCADE)
     price = models.FloatField()
     date_of_transaction = models.DateField()
-    transaction_type = models.CharField(max_length=32,choices=TRANSACTION_TYPES,default=BUY)
+    transaction_type = models.CharField(max_length=32, choices=TRANSACTION_TYPES, default=BUY)
 
     def __str__(self):
-        return f"User: {self.user} | Price: {self.price}"
+        return f"{self.user} | {self.cryptocurrency.name} | Cena: {self.price} | Typ: {self.transaction_type} | Data: {self.date_of_transaction}"
 
+    class Meta:
+        verbose_name = "Kupno i sprzedaż"
+        verbose_name_plural = "Kupno i sprzedaż"
