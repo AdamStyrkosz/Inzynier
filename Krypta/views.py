@@ -129,11 +129,13 @@ class Dashboard(LoginRequiredMixin, View):
             crypto_to_price_mapping[crypto['currency']] = crypto['price']
 
         for crypto in cryptocurencies:
-            crypto['actual_price'] = float(crypto_to_price_mapping[crypto['cryptocurrency_id']])
-            crypto['price_diff'] = (float(crypto['actual_price'])) * float(crypto['count']) - (
-                        float(crypto['price']) * float(crypto['count']))
-            balance += crypto['actual_price'] * crypto['count']
-            value_diff += crypto['price_diff']
+                crypto['actual_price'] = float(crypto_to_price_mapping[crypto['cryptocurrency_id']])
+                crypto['price_diff'] = (float(crypto['actual_price'])) * float(crypto['count']) - (
+                            float(crypto['price']) * float(crypto['count']))
+                value_diff += crypto['price_diff']
+                if crypto['transaction_type'] == CryptocurrencyExchangeModel.BUY:
+                    balance += crypto['actual_price'] * crypto['count']
+
 
         context = {
             "user": request.user,

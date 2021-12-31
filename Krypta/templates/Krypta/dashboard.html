@@ -11,13 +11,14 @@
         </form>
       </div>
       <h1>Stan konta: {{balance|floatformat:2|intcomma}}$</h1>
-      <h2>Całkowity zysk/strata: {{value_diff|floatformat:2|intcomma}}$</h2>
+      <h2>Potencjalny całkowity zysk/strata: {{value_diff|floatformat:2|intcomma}}$</h2>
       <table class="table">
         <tr>
           <th>Waluta</th>
           <th>Data transakcji</th>
           <th>Ilość</th>
-          <th>Cena zakupu</th>
+          <th>Typ</th>
+          <th>Cena</th>
           <th>Aktualna cena</th>
           <th>Zysk / Strata ($)</th>
           <th>Akcja</th>
@@ -27,6 +28,7 @@
           <td>{{crypto.cryptocurrency_id}}</td>
           <td>{{crypto.date_of_transaction}}</td>
           <td>{{crypto.count|floatformat:3|intcomma }}</td>
+          <td>{{crypto.transaction_type}}</td>
           <td>${{crypto.price|floatformat:2|intcomma }}</td>
           <td>${{crypto.actual_price|floatformat:2|intcomma }}</td>
           {%if crypto.price_diff > 0%}

@@ -37,11 +37,19 @@ class Cryptocurrency(models.Model):
         return self.id
 
 class CryptocurrencyExchangeModel(models.Model):
+    BUY = "BUY"
+    SELL = "SELL"
+    TRANSACTION_TYPES = (
+        (BUY,"Kupno"),
+        (SELL,"Sprzedaż")
+    )
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     count = models.FloatField()
     cryptocurrency = models.ForeignKey(Cryptocurrency,on_delete=models.CASCADE)
-    price = models.IntegerField()
+    price = models.FloatField()
     date_of_transaction = models.DateField()
+    transaction_type = models.CharField(max_length=32,choices=TRANSACTION_TYPES,default=BUY)
 
     def __str__(self):
         return f"User: {self.user} | Price: {self.price}"
