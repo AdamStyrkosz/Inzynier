@@ -3,9 +3,8 @@ import os
 
 from django.conf import settings
 from django.db import models
-
-
 # Create your models here.
+from django.db.models import CASCADE
 
 
 def filepath(request, filename):
@@ -29,6 +28,13 @@ class Wpis(models.Model):
     class Meta:
         verbose_name = "Wpis"
         verbose_name_plural = "Wpisy"
+
+
+class Comment(models.Model):
+    news = models.ForeignKey(Wpis, related_name='news', on_delete=CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
+    content = models.TextField(max_length=512)
+    publication_date = models.DateTimeField(auto_now=True)
 
 
 class Cryptocurrency(models.Model):
