@@ -1,7 +1,7 @@
 from nomics import Nomics
 from rest_framework import serializers
 
-from .models import CryptocurrencyExchangeModel, Cryptocurrency
+from .models import CryptocurrencyExchangeModel, Cryptocurrency, Comment
 
 nomics = Nomics("7e9fbd09298ee1d741b02b628020b0bb7a6819e8")
 
@@ -27,3 +27,13 @@ class ExchangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CryptocurrencyExchangeModel
         fields = "__all__"
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = (
+            'user',
+            'content',
+            'news'
+        )

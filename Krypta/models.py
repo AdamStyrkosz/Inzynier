@@ -15,7 +15,12 @@ def filepath(request, filename):
 
 
 class Wpis(models.Model):
+    ARTICLE_TYPES = (
+        ('NEWS', 'Aktualności'),
+        ('EDUCATION', 'Artukuły edukacyjne')
+    )
     id = models.AutoField(primary_key=True)
+    type = models.CharField(max_length=16, choices=ARTICLE_TYPES)
     tytul = models.CharField(max_length=50)
     zawartosc = models.TextField(max_length=5000)
     opis = models.TextField(max_length=250)

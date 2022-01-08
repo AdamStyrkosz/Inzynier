@@ -6,16 +6,15 @@ from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import View, UpdateView
-from django.views.generic.detail import DetailView
-from django.views.generic.list import ListView
 from nomics import Nomics
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .forms import ExchangeForm, UserRegistration
-from .models import CryptocurrencyExchangeModel, Wpis, Cryptocurrency
-from .serializers import CryptoDetailSerializer, ExchangeSerializer
+from .models import CryptocurrencyExchangeModel, Wpis, Cryptocurrency, Comment
+from .serializers import CryptoDetailSerializer, ExchangeSerializer, CommentSerializer
 
 # Create your views here.
 
@@ -23,6 +22,15 @@ nomics = Nomics("7e9fbd09298ee1d741b02b628020b0bb7a6819e8")
 
 
 # API VIEWS
+class CommentAddView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(status=200)
+
 
 class ExchangeViewSet(LoginRequiredMixin, viewsets.ModelViewSet):
     queryset = CryptocurrencyExchangeModel.objects.all()
@@ -158,13 +166,31 @@ class CryptocurrencyList(View):
         return render(request, "Krypta/kursy.html")
 
 
-class AktualnosciView(ListView):
-    model = Wpis
-    ordering = "-data_utworzenia"
+class NewsArticleView(View):
+    def get(self, request):
+        queryset = Wpis.objects.filter(type='NEWS').order_by("-data_utworzenia")
+        content = {
+            'news': queryset
+        }
+        return render(request, 'Krypta/wpis_list.html', content)
 
 
-class WpisDetail(DetailView):
-    model = Wpis
+class EducationArticaleView(View):
+    def get(self, request):
+        queryset = Wpis.objects.filter(type='EDUCATION').order_by("-data_utworzenia")
+        content = {
+            'news': queryset
+        }
+        return render(request, 'Krypta/wpis_list.html', content)
+
+
+class WpisDetail(View):
+    def get(self, request, pk, *args, **kwargs):
+        content = {
+            'wpis': Wpis.objects.get(id=pk),
+            'comments': Comment.objects.filter(news=pk).order_by('-publication_date')
+        }
+        return render(request, 'Krypta/wpis_detail.html', content)
 
 
 class UserDetail(LoginRequiredMixin, View):
